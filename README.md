@@ -3,7 +3,7 @@
 
 ### Technical Note
 
-We originally tried to include a copy of Stanford's GloVe model, an implementation of Word2Vec. Unfortunately the file was over 300 megabytes and more than 3x github's file size limits. If the reader wishes to fork this repo and run the code in notebook ```06-Word2Vec``` themselves, they will need to download a copy of Stanford's <a href='https://nlp.stanford.edu/projects/glove/'> GloVe 6b model</a> and place the file in the empty ```word2vec``` folder.
+If the reader wishes to fork this repo and run the code in notebook ```06-Word2Vec``` themselves, they will need to download a copy of Stanford's <a href='https://nlp.stanford.edu/projects/glove/'> GloVe 6b model</a> and place the file in the empty ```word2vec``` folder.
 
 <br>
 
