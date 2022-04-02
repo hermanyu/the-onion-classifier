@@ -5,6 +5,8 @@
 
 If the reader wishes to fork this repo and run the code in notebook ```06-Word2Vec``` themselves, they will need to download a copy of Stanford's <a href='https://nlp.stanford.edu/projects/glove/'> GloVe 6b model</a> and place the file in the empty ```word2vec``` folder.
 
+<a href='https://docs.google.com/presentation/d/1jXqp5DOVS1F5TZQ6ki3e7vIDf7EvglU-UlW51fy1Guc/edit?usp=sharing'> Project Presentation (Google Slides)</a>
+
 <br>
 
 ## Problem Statement
