@@ -27,11 +27,11 @@ While we cannot hope to completely solve the problem of fake news detection in t
 
 <br>
 
-The detection of fake news is interesting for many reasons. From a technical data science and machine learning perspective, the challenge lies in how to encode text data into usable numeric values (on which we can train models). *Natural Language Processing* or *NLP* is the theory of how to perform such encodings and this project constitutes a good exploration into the techniques and ideas of NLP. Central to the question of text-to-numeric encoding is how to preserve information carried by text datum such as grammer, context, and sentiment.
+The detection of fake news is interesting for many reasons. From a technical data science and machine learning perspective, the challenge lies in how to encode text data into usable numeric values (on which we can train models). *Natural Language Processing* or *NLP* is the theory of how to perform such encodings and this project constitutes an elementary exploration into the techniques and ideas of NLP. Central to the question of text-to-numeric encoding is how to preserve information carried by text data such as grammer, context, and sentiment.
 
 From a business perspective, fake news detection can identify misleading or blatantly false marketing campaigns designed to negatively sway public opinion. This is important when it comes to issues such as brand association, brand integrity, product reputation, and most importantly public relations.
 
-For the purposes of this project we scraped text data from <a href='https://www.reddit.com/'> reddit </a>, which is an internet forum-style website where users post and comment on content of various topics. Reddit is segmented into sub-forums called "subreddits" with each subreddit specific to a singular topic. We will be scraping data from the subreddits <a href='https://www.reddit.com/r/news/'> r/news </a> and <a href='https://www.reddit.com/r/TheOnion/'>r/TheOnion </a>. The Onion is a satirical news website which publishes fake news articles for the purposes of humor and social commentary. We decided on The Onion as our standard for fake news since it is the most objective such benchmark (i.e. there is not much ambiguity in whether The Onion is considered real or fake news).
+For the purposes of this project we scraped text data from <a href='https://www.reddit.com/'> reddit </a>, which is an internet forum-style website where users post and comment on content of various topics. Reddit is segmented into sub-forums called "subreddits" with each subreddit specific to a singular topic. We will be scraping data from the subreddits <a href='https://www.reddit.com/r/news/'> r/news </a> and <a href='https://www.reddit.com/r/TheOnion/'>r/TheOnion </a>. The Onion is a satirical news website which publishes fake news articles for the purposes of humor and social commentary. The Onion constitutes a good standard for fake news since it is the most objective such standard (i.e. there is not much ambiguity in whether The Onion is considered real or fake news).
 
 <br>
 
@@ -45,7 +45,7 @@ For the purposes of this project we scraped text data from <a href='https://www.
 
 Our methodology can be broken down into 3 macro-level steps: 
 1. Use webscraping to collect data from reddit.
-2. Use various NLP techniques to transform the text datum into vector-valued datum.
+2. Use various NLP techniques to transform each piece of text datum into vector-valued datum.
 3. Train models on the vector-valued data.
 
 <br> 
@@ -54,31 +54,31 @@ Our methodology can be broken down into 3 macro-level steps:
 
 Gathering the necessary data required scraping the aforementioned subreddits. We did so with the <a href='https://github.com/pushshift/api'> Pushshift API</a> which stores and tracks reddit posts and comments. Pushshift currently has a 500 post limit per server request, so we wrote a custom wrapper ```bifrost.py``` to automatically loop through multiple requests at 0.8s intervals thereby scraping all the necessary data. 
 
-We attempted to scrape 100,000 posts from both *r/news* and *r/TheOnion*. We successfully did so for *r/news* but were only able to scrape 17,000 posts from *r/TheOnion*. We suspect that we might have scraped all the posts from *r/TheOnion*. This is worth keeping in mind since the posts from *r/news* are mostly recent news headlines (as of March 2022) while the posts from *r/TheOnion* maybe span across a few years.
+We attempted to scrape 100,000 posts from both *r/news* and *r/TheOnion*. We successfully did so for *r/news* but were only able to scrape 17,000 posts from *r/TheOnion*; we suspect this might be all the available posts from the latter subreddit. This is worth keeping in mind since the posts from *r/news* are mostly recent news headlines (as of March 2022) while the posts from *r/TheOnion* may span across a few years.
 
-After cleaning the data, the result was approximately 80,000 usable training examples with approximately 70,000 posts from *r/news* and 10,000 posts from *r/TheOnion*. This presented an interesting issue since the data science problem now became one of **imbalanced classes**; *r/news* posts outnumbered *r/TheOnion* posts at a ratio of over 7:1 which can lead to issues when evaluating our model's accuracy. We were thus faced with the decision of either: 1) preserving the imbalanced classes or 2) undersampling the majority class to get an even 50:50 split (i.e. throw away *r/news* posts until we have the same number as *r/TheOnion*). We decided to pursue both possibilities and built two rosters of models:
+After cleaning the data, the result was approximately 80,000 usable training examples with approximately 70,000 posts from *r/news* and 10,000 posts from *r/TheOnion*. This presented an interesting data science problem: *r/news* posts outnumbered *r/TheOnion* posts at a ratio of 7:1 which lead to issues when evaluating our model's accuracy. We were thus faced with the decision of either: (1) preserving the imbalanced classes or (2) undersampling the majority class to get an even 50:50 split (i.e. throw away *r/news* posts until we have the same number as *r/TheOnion*). We decided to pursue both possibilities and built two rosters of models:
 - Imbalanced Data: Naive Bayes, Logistic Regression, Linear SVM, and a Neural Network
 - Balanced Data: Bagging Classifier with Trees, Random Forest, AdaBoost, and Gradient Boost.
 
-Notice that the roster of models for the balanced data are comprised mostly of ensemble methods. This is because by undersampling the majority class, we drastically reduce the size of the training set. This makes ensemble classifiers a much more reasonable proposition given our time and hardware limitations. This is a major reason for why we decided to investigate the balanced class route in addition to the imbalanced class route.
+Notice that the roster of models for the balanced data are comprised mostly of ensemble methods. This is because by undersampling the majority class, we drastically reduce the size of the training set. This makes the proposition of using ensemble methods more reasonable given our resource limitations. This possibility of using ensemble methods constitutes a major reason for why we decided to investigate the balanced class route in addition to the imbalanced class route.
 
 <br>
 
 ### Step 2: Natural Language Processing
 
-A **document** is a single training example of text datum (in our case a document is a post title). The **corpus** is the collection of all documents (the entire dataset). The **vocabulary** or **vocab** is the set of all words that appear in the corpus. In order to train our models, we must encode the text datum into vector datum. The methods of such encodings fall into the domain of Natural Language Processing or NLP. The 4 encoding methods we explore are:
+A **document** is a single training example of text datum (in our case a document is a post title). The **corpus** is the collection of all documents (the entire dataset). The **vocabulary** or **vocab** is the set of all words that appear in the corpus. In order to train our models, we must encode the piece of text datum into numerical vector. The methods of such encodings fall into the domain of Natural Language Processing or NLP. This project explores 4 encoding methods:
 1. Count Vectorization.
 2. Term Frequence - Inverse Document Frequency (TF-IDF),
 3. Sentiment Analysis (or SIA for short).
 4. Word2Vec.
 
-For the convenience of the reader, we give a brief summary of each of these encoding methods now. **Count Vectorization** simply creates a variable for each word in the vocabulary and counts the number of occurences of each word in a given document. Thus a document is encoded as the *count* of the words that appear in it.
+For the convenience of the reader, we give a brief summary of each of these encoding methods now. **Count Vectorization** simply creates a variable for each word in the vocabulary. A document is then assigned to a row vector, where the i-th entry is the number of times the i-th word appears in the document. Thus a document is encoded as the *count* of the words that appear in it.
 
-**Term Frequence - Inverse Document Frequency** or TF-IDF augments the count vectorization encoding by also adding an "rarity" factor to each word. The idea is that words which show up very rarely actually carry the most information (and hence should be given more weight). For example, seeing a word like "welcome" does not tell us much since it appears in so many contexts, but seeing the word "soliloquy" tells us a lot since it is a rare word with a very specific usage.
+**Term Frequence - Inverse Document Frequency** or TF-IDF augments the count vectorization encoding by including a "rarity" factor to each word. The idea is that words which show up very rarely actually carry the most information (and hence should be given more weight). For example, seeing a word like "welcome" does not tell us much since it appears in so many contexts, but seeing the word "soliloquy" tells us a lot since it is a rare word with a very specific usage.
 
 **Sentiment Intensity Analysis** (or SIA for short) assigns each word a value called a *polarity score*. Polarity scores correspond a feeling of "positive" or "negative" associated to each word. For example a word like "horrors" would have a high negative score, while a word like "elegant" would have a high positive score. Each document is assigned an overall polarity vector by measuring the polarity of each of its words.
 
-**Word2Vec** is an assignment of a word to a vector such that words who are close in meaning are also close as vectors. Closeness for vectors is measured by the cosine of their angle. For example, if the word "dog" is assigned to the vector < 1 ,2, 3 > then the word "wolf" might be assigned to the vector < 1, 2 , 3.1 >. The actual process of arriving at an assignment scheme requires a technical explanation but in a nutshell: words are randomly assigned first, then progressively moved closer or further using some loss function as an optimization objective.
+**Word2Vec** is an assignment of a word to a vector such that words who are close in meaning are also close as vectors. Closeness for vectors is measured by the cosine of their angle. For example, if the word "dog" is assigned to the vector < 1 ,2, 3 > then the word "wolf" might be assigned to the vector < 1, 2 , 3.1 >. Explaining the actual process of getting such an assignment scheme would take us too far afield but as a quick synopsis: words are assigned to random vectors, then progressively moved closer or further using some loss function as an optimization objective.
 
 To encode a document using Word2Vec, we first encode each word to its assigned vector, then just concantenate all the vectors. This gives us a single long vector for each document which can be fed into a training model like any of the other encodings.
 
@@ -88,14 +88,14 @@ To encode a document using Word2Vec, we first encode each word to its assigned v
 
 As mentioned above, the model training procedure is split into two rosters based on two different data sets: imbalanced data and balanced data.
 
-For the imbalanced data, we have 80,000 training examples with a 7:1 ratio of negatives to positive cases (*r/TheOnion* posts are treated as the positive class). This imbalance of classes yields a baseline accuracy of 87%, which is the accuracy any model can achieve by just randomly guessing the 0 class (*r/news*) for every single prediction. This is obviously bad since it means that a "high" accuracy score might not be reflective of the model's actual performance.
+For the imbalanced data, we have 80,000 training examples with a 7:1 ratio of negative to positive cases (*r/TheOnion* posts are treated as the positive class). This imbalance of classes yields a baseline accuracy of 87%, which is the accuracy any model can achieve by just randomly guessing the 0 class (*r/news*) for every single prediction. Clearly, this is problematic since a "high" accuracy score might not be reflective of the model's actual performance.
 For this reason, we also pay close attention to Recall, Precesion, F1, and AUC scores. 
 
 For the balanced data, we have 20,000 training examples with a perfect 1:1 ratio of negatives to positive cases. Since we reduced the number of training examples significantly, it now becomes feasible to explore ensemble methods on the data and we indeed do so.
 
 In a addition to the usual suspects of ML models, we also implement a simple Neural Network with 1 hidden layer and 2000 hidden units, which we refer to as "OnionNet".
 
-After all models have been built and a single "best model" has been selected, we score it against one final hold-out test set to evaluate this overall project's efficient. We then proceed to train a finalized model on all data points.
+After all models have been built and a single "best model" has been selected, we score it against one final hold-out test set to evaluate this project's overall efficacy. We then proceed to train a finalized model on all data points.
 
 
 <br>
@@ -173,10 +173,10 @@ In conclusion this project implemented a host of different models and NLP techni
 
 <br>
 
-3. The Ensemble Methods we tried all produce significantly overfit models. We can reel in some of this variance by investing more time tuning hyperparameters. At the moment, our hardware limitations make large grid searchs over these ensemble models unfeasible, but we might be able to deal with this issue using cloud computing.
+3. The Ensemble Methods we tried all produce significantly overfit models. We can reel in some of this variance by investing more time tuning hyperparameters. At the moment, our hardware limitations make large grid searchs over these ensemble models unfeasible, but we might be able to overcome this issue using cloud computing.
 
 <br>
 
-4. Instead performing an automated webscrape of reddit, we can try instead to find cleaner and better labeled data from other sources. One possible idea: scrape The Onion website directly.
+4. Instead of performing an automated webscrape of reddit, we can try instead to find cleaner and better labeled data from other sources. One possible idea: scrape The Onion website directly.
 
-Finally, let us end by saying that this project was primarily sold as a fake news detection project but it is important to keep in mind that The Onion is satire. At the moment, machine learning classification on satirical text and humor in general is not well understood and an active, exciting area of research in NLP. We are very much interested in exploring the possibilities in this area of machine learning.
+Finally, let us end by saying that this project was primarily sold as a fake news detection project but it is important to keep in mind that The Onion is satire. At the moment, machine learning classification on satirical text and humor in general is not well understood and an active, exciting area of research in NLP. We are very much interested in exploring the possibilities in this area of machine learning further by either updating this project or on in some future standalone project.
