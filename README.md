@@ -95,7 +95,7 @@ For the balanced data, we have 20,000 training examples with a perfect 1:1 ratio
 
 In a addition to the usual suspects of ML models, we also implement a simple Neural Network with 1 hidden layer and 2000 hidden units, which we refer to as "OnionNet".
 
-After all models have been built and a single "best model" has been selected, we score it against one final hold-out test set to evaluate this project's overall efficacy. We then proceed to train a finalized model on all data points.
+Beyond the simple layer, we also explore the possibility of using an LSTM layer. This recurrent neural network architecture is of interest because each piece of text datum is inherently sequential in nature: the order of the words carry a lot of information about the meaning behind those words.
 
 
 <br>
@@ -130,6 +130,7 @@ As for the models themselves, we trained two different rosters of models for eac
 |Logistic Regresion (TF-IDF)| 93.3% | 57% | 85% | 69% | 0.94 |
 |Linear SVM (TF-IDF) | 93.4% | 56% | 87% | 67% | 0.94|
 |OnionNet| 90.7% | 52% | 67% | 58% | - |
+|OnionNet (LSTM) | 91.7% | - | - | - | - |
 
 <br>
 
@@ -144,7 +145,7 @@ As for the models themselves, we trained two different rosters of models for eac
 | Random Forest | 79% | 73% | 83% | 78% | 0.89|
 | AdaBoost| 72% | 72% | 72% | 72% | 0.78 |
 |Gradient Boosted Trees| 78% | 75% | 80% | 77% | 0.87
-|OnionNet| 81% | 84% | 80% | 82% | - |
+|OnionNet| 81% | 84% | 80% | 82% | - | 
 
 
 <br>
